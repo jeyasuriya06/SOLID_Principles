@@ -1,66 +1,58 @@
 package SRP;
 
 public class User {
-    String name;
-    int age;
-    
-    public String getName(){
-        return name;
+    private final String email;
+
+    public User(String email) {
+        this.email = email;
     }
 
-    public int getAge() {
-        return age;
-    }
-}
-
-class UserNamePrinter {
-    void print(String name) {
-        System.out.println(name);
+    public String getEmail() {
+        return email;
     }
 }
 
-class UserAgePrinter {
-    void print(int age) {
-        System.out.println(age);
-    }
-}
-
-class UserProfilePrinter {
-    void print(User user) {
-        System.out.println(user.getName());
-        System.out.println(user.getAge());
-    }
-}
-
-class ValidateEmail {
-    boolean execute(String email) {
+class EmailValidator {
+    boolean isValid(String email) {
         return email.contains("@");
     }
 }
 
-class SaveUser {
-    void execute(User user) {
+class UserRepository {
+    void save(User user) {
         System.out.println("Saving user");
     }
 }
 
-class SendWelcomeEmail {
-    void execute(User user) {
-        System.out.println("Sending email");
+class WelcomeEmailSender {
+    void send(User user) {
+        System.out.println("Sending welcome email");
     }
 }
 
 class UserRegistrationService {
 
-    void register(User user) {
-        validate(user);
-        save(user);
-        sendWelcomeEmail(user);
+    private final EmailValidator validator;
+    private final UserRepository repository;
+    private final WelcomeEmailSender emailSender;
+
+    UserRegistrationService(
+        EmailValidator validator,
+        UserRepository repository,
+        WelcomeEmailSender emailSender
+    ) {
+        this.validator = validator;
+        this.repository = repository;
+        this.emailSender = emailSender;
     }
 
-    private void validate(User user) { }
-    private void save(User user) { }
-    private void sendWelcomeEmail(User user) { }
-}
+    void register(User user) {
+        if (!validator.isValid(user.getEmail())) {
+            throw new IllegalArgumentException("Invalid email");
+        }
 
+        repository.save(user);
+        emailSender.send(user);
+    }
+}
 
